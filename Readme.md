@@ -1154,7 +1154,7 @@ class Controller extends React.Component {
 }
 ```
 
-Step 35
+Step 35 - Introducing Inline Styles
 
 
 

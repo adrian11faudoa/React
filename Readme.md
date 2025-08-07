@@ -334,7 +334,7 @@ Types of Food:
 
 In React, you can pass **props**, or properties, to child components. 
 Say you have an **App** component which renders a child component called **Welcome** which is a stateless functional component. 
-You can pass Welcome a user property by writing:
+You can pass **Welcome** a user property by writing:
 Example Code:
 ```
     <App>
@@ -510,7 +510,7 @@ class ShoppingCart extends React.Component {
 
 
 Anytime you refer to a class component within itself, you use the **this** keyword. 
-To access props within a class component, you preface the code that you use to access it with this. 
+To access props within a class component, you preface the code that you use to access it with **this**. 
 For example, if an ES6 class component has a **prop** called **data**, you write 
 Example Code:
 ```
@@ -527,7 +527,7 @@ class App extends React.Component {
   render() {
     return (
         <div>
-            <Welcome name= {"Azarot"}/>
+            <Welcome name= {"Azrel"}/>
         </div>
     );
   }
@@ -546,7 +546,667 @@ class Welcome extends React.Component {
 };
 ```
 
-Step 20
+
+A **stateless functional component** is any function you write which accepts props and returns JSX. 
+
+A **stateless component**, on the other hand, is a class that extends React.Component, but does not use internal state 
+
+A **stateful component** is a class component that does maintain its own internal state
+
+
+A common pattern is to try to minimize **statefulness** and to create **stateless functional components** wherever possible. 
+
+This helps contain your state management to a specific area of your application. 
+
+In turn, this improves **development** and **maintenance** of your app by making it easier to follow how changes to state affect its behavior
+
+
+**State** consists of any data your application needs to know about, that can change over time. 
+You want your apps to respond to state changes and present an updated UI when necessary. 
+
+You create state in a React component by declaring a state property on the component class in its **constructor**. 
+
+This initializes the component with state when it is created. 
+
+The state property must be set to a **JavaScript object**.
+Example Code:
+```
+  this.state = {
+
+  }
+```
+
+You have access to the state object throughout the life of your component. 
+
+You can update it, render it in your UI, and pass it as props to child components. 
+
+Note that you must create a class component by extending React.Component in order to create state like this.
+
+Example Code:
+```
+class StatefulComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {firstName: "Crow"}
+  }
+  render() {
+    return (
+      <div>
+        <h1>{this.state.firstName}</h1>
+      </div>
+    );
+  }
+};
+```
+
+
+If a component is stateful, it will always have access to the data in state in its render() method. 
+
+You can access the data with **this.state**
+
+If you want to access a state value within the return of the render method, you have to enclose the value in curly braces.
+
+State allows you to track important data in your app and render a UI in response to changes in this data. 
+
+If your data changes, your UI will change. 
+
+React uses what is called a **virtual DOM**, to keep track of changes behind the scenes
+
+
+Note that if you make a component stateful, no other components are aware of its state. 
+
+Its state is completely encapsulated, or local to that component, unless you pass state data to a child component as props
+
+
+There is **another way** to access state in a component. 
+
+In the render() method, before the return statement, you can write JavaScript directly. 
+
+For example, you could declare functions, access data from **state** or **props**, perform computations on this data, and so on. 
+
+Then, you can assign any data to variables, which you have access to in the return statement.
+
+Example Code:
+```
+class MyComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: 'freeCodeCamp'
+    }
+  }
+  render() {
+    const name = this.state.name;
+    return (
+      <div>
+        <h1>{name}</h1>
+      </div>
+    );
+  }
+};
+```
+
+
+React provides a method for updating component **state** called **setState**
+
+You call the setState method within your component class like so: **this.setState()**, passing in an object with key-value pairs
+
+The **keys** are your state **properties** and the **values** are the updated state **data**. 
+
+For instance, if we were storing a username in state and wanted
+to update it, it would look like this:
+
+Example Code:
+```
+  this.setState({
+    username: 'Lewis'
+  });
+```
+
+Example Code:
+```
+class MyComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: 'Initial State'
+    };
+    this.handleClick = this.handleClick.bind(this);
+  }
+  handleClick() {
+    this.setState({ name: "React Rocks!"})
+  }
+  render() {
+    return (
+      <div>
+        <button onClick={this.handleClick}>Click Me</button>
+        <h1>{this.state.name}</h1>
+      </div>
+    );
+  }
+};
+```
+
+
+A class method typically needs to use the **this** keyword so it can access properties on the class (such as state and props) inside the scope of the method. 
+
+There are a few ways to allow your class methods to access this.
+
+One common way is to explicitly **bind this** in the constructor so **this** becomes bound to the class methods when the component is initialized.
+
+
+Sometimes you might need to know the previous state when updating the state. 
+
+However, state updates may be **asynchronous** - this means React may batch multiple setState() calls into a single update. 
+
+This means you **can't rely** on the previous value of **this.state** or **this.props** when calculating the next value. 
+
+Example Code: Should not use code like this
+```
+  this.setState({
+    counter: this.state.counter + this.props.increment
+  });
+```
+
+Instead, you should pass setState a **function** that allows you to access state and props. 
+
+Using a function with setState guarantees you are working with the most **current values** of **state** and **props**
+
+Example Code: Should be rewritten as
+```
+  this.setState((state, props) => ({
+    counter: state.counter + props.increment
+  }));
+```
+
+Example Code: if only state is need it
+```
+  this.setState(state => ({
+    counter: state.counter + 1
+  }));
+```
+
+Note that you have to wrap the object literal in parentheses, otherwise JavaScript thinks it's a block of code
+
+
+Example Code:
+```
+class MyComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      visibility: false
+    };
+    this.toggleVisibility = this.toggleVisibility.bind(this);
+  }
+  toggleVisibility() {
+    this.setState(state => ({
+      visibility: !state.visibility
+    }));
+  }
+  render() {
+    if (this.state.visibility) {
+      return (
+        <div>
+          <button onClick={this.toggleVisibility}>Click Me</button>
+          <h1>Now you see me!</h1>
+        </div>
+      );
+    } else {
+      return (
+        <div>
+          <button onClick={this.toggleVisibility}>Click Me</button>
+        </div>
+      );
+    }
+  }
+}
+```
+
+
+Example Code: Counter
+```
+class Counter extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      count: 0
+    };
+    this.increment = this.increment.bind(this);
+    this.decrement = this.decrement.bind(this);
+    this.reset = this.reset.bind(this);
+  }
+  increment() {
+    this.setState(state => ({count: state.count + 1}))
+  }
+  decrement() {
+    this.setState(state => ({count: state.count - 1}))
+  }
+  reset() {
+    this.setState({count: 0})
+  }
+  render() {
+    return (
+      <div>
+        <button className='inc' onClick={this.increment}>Increment!</button>
+        <button className='dec' onClick={this.decrement}>Decrement!</button>
+        <button className='reset' onClick={this.reset}>Reset</button>
+        <h1>Current Count: {this.state.count}</h1>
+      </div>
+    );
+  }
+};
+```
+
+**Form control elements** for text input, such as ***input*** and **textarea**, maintain their own state in the DOM as the user types. 
+
+With React, you can move this mutable state into a React component's state. 
+
+This applies to other form elements as well, including the regular HTML **form** element.
+
+The **user's input** becomes part of the application state, so React controls the value of that input field
+
+Example Code:
+```
+class ControlledInput extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      input: ''
+    };
+    this.handleChange = this.handleChange.bind(this)
+  }
+  handleChange(event) {
+    this.setState({
+      input: event.target.value
+    })
+  }
+  render() {
+    return (
+      <div>
+        <input value={this.state.input} onChange={this.handleChange}></input>
+        <h4>Controlled Input:</h4>
+        <p>{this.state.input}</p>
+      </div>
+    );
+  }
+};
+```
+
+
+Example Code:
+```
+class MyForm extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      input: '',
+      submit: ''
+    };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+  handleChange(event) {
+    this.setState({
+      input: event.target.value
+    });
+  }
+  handleSubmit(event) {
+    this.setState(state => ({
+      submit: state.input
+    }));
+    event.preventDefault()
+  }
+  render() {
+    return (
+      <div>
+        <form onSubmit={this.handleSubmit}>
+          <input value={this.state.input} onChange={this.handleChange}></input>
+          <button type='submit'>Submit!</button>
+        </form>
+        <h1>{this.state.submit}</h1>
+      </div>
+    );
+  }
+}
+```
+
+
+A **common pattern** is to have a stateful component containing the **state** important to your app, that then renders child components. 
+
+You want these components to have access to some pieces of that **state**, which are passed in as **props**.
+
+
+For example, maybe you have an **App** component that renders a **Navbar**, among other components. 
+
+In your **App**, you have **state** that contains a lot of **user information**, but the **Navbar** only needs access to the **user's username** so it can display it. 
+
+You pass that piece of state to the **Navbar** component as a **prop**.
+
+
+This pattern illustrates some important paradigms in React. 
+
+The first is **unidirectional** data flow. 
+
+**State** flows in one direction down the tree of your application's components, from the **stateful parent** component to **child components**. 
+
+The child components only receive the state data they need. 
+
+The second is that **complex stateful apps** can be broken down into just a few, or maybe a **single**, stateful component. 
+
+The rest of your components simply receive state from the parent as **props**, and render a UI from that state. 
+
+It begins to create a separation where **state management** is handled in one part of code and **UI rendering** in another
+
+
+Example Code:
+```
+class MyApp extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      name: 'CamperBot'
+    }
+  }
+  render() {
+    return (
+       <div>
+         <Navbar name= {this.state.name}/>
+       </div>
+    );
+  }
+};
+class Navbar extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return (
+    <div>
+      <h1>Hello, my name is: {this.props.name}</h1>
+    </div>
+    );
+  }
+};
+```
+
+
+You can also pass **handler functions** or any method that's defined on a React component to a child component. 
+
+This is how you allow child components to interact with their parent components. 
+
+You pass methods to a child just like a regular **prop**. 
+
+It's assigned a name and you have access to that method name under **this.props** in the child component.
+
+Example Code:
+```
+class MyApp extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      inputValue: ''
+    }
+    this.handleChange = this.handleChange.bind(this);
+  }
+  handleChange(event) {
+    this.setState({
+      inputValue: event.target.value
+    });
+  }
+  render() {
+    return (
+       <div>
+        <GetInput input={this.state.inputValue} handleChange={this.handleChange}/>
+        <RenderInput input={this.state.inputValue}/>
+       </div>
+    );
+  }
+};
+
+class GetInput extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return (
+      <div>
+        <h3>Get Input:</h3>
+        <input
+          value={this.props.input}
+          onChange={this.props.handleChange}/>
+      </div>
+    );
+  }
+};
+
+class RenderInput extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  render() {
+    return (
+      <div>
+        <h3>Input Render:</h3>
+        <p>{this.props.input}</p>
+      </div>
+    );
+  }
+};
+```
+
+
+React components have several **special methods** that provide opportunities to perform actions at specific points in the lifecycle of a component. 
+
+These are called **lifecycle methods**, or **lifecycle hooks**, and allow you to catch components at certain points in time.
+
+This can be **before** they are **rendered**, before they **update**, before they **receive props**, before they **unmount**, and so on
+
+Here is a list of some of the main lifecycle methods: **componentWillMount()** 
+**componentDidMount()** 
+**shouldComponentUpdate()** 
+**componentDidUpdate()** 
+**componentWillUnmount()**
+
+
+The **componentWillMount()** method is called before the **render()** method when a component is being mounted (rendered to the DOM for the first time) to the DOM
+
+
+Replacement **componentDidMount()**
+
+This method is called **after** a component is mounted to the DOM.
+
+Any calls to setState() here will trigger a **re-rendering** of your component. 
+
+When you call an **API** in this method, and set your state with the data that the API returns, it will automatically trigger an update once you receive the data.
+
+Example Code:
+```
+class MyComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      activeUsers: null
+    };
+  }
+  componentDidMount() {
+    setTimeout(() => {
+      this.setState({
+        activeUsers: 1273
+      });
+    }, 2500);
+  }
+  render() {
+    return (
+      <div>
+        <h1>Active Users: {this.state.activeUsers}</h1>
+      </div>
+    );
+  }
+}
+```
+
+
+The **componentDidMount()** method is also the best place to attach any event listeners you need to add for specific functionality. 
+
+React provides a **synthetic event system** which wraps the native event system present in browsers. 
+
+This means that the **synthetic event system** behaves exactly the same regardless of the user's browser - even if the native events may behave differently between different browsers.
+
+Some of these **synthetic event** handlers such as **onClick()**
+
+Example Code:
+```
+class MyComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      message: ''
+    };
+    this.handleEnter = this.handleEnter.bind(this);
+    this.handleKeyPress = this.handleKeyPress.bind(this);
+  }
+  componentDidMount() {
+    document.addEventListener("keydown", this.handleKeyPress);
+  }
+  componentWillUnmount() {
+    document.removeEventListener("keydown", this.handleKeyPress);
+  }
+  handleEnter() {
+    this.setState((state) => ({
+      message: state.message + 'You pressed the enter key! '
+    }));
+  }
+  handleKeyPress(event) {
+    if (event.keyCode === 13) {
+      this.handleEnter();
+    }
+  }
+  render() {
+    return (
+      <div>
+        <h1>{this.state.message}</h1>
+      </div>
+    );
+  }
+};
+```
+
+It's good practice to use this lifecycle method to do any clean up on React components before they are unmounted and destroyed. 
+
+Removing event listeners is an example of one such clean up action.
+
+
+React provides a lifecycle method you can call when child components receive new **state** or **props**, and declare specifically if the components should update or not. 
+
+The method is **shouldComponentUpdate()**, and it takes **nextProps** and **nextState** as parameters.
+
+The default behavior is that your component **re-renders** when it receives new props, even if the props haven't changed. 
+
+You can use **shouldComponentUpdate()** to prevent this by comparing the props
+
+The method must return a boolean value that tells React whether or not to update the component. 
+
+You can compare the current props (**this.props**) to the next props (**nextProps**) to determine if you need to update or not, and return **true** or **false** accordingly.
+
+Example Code:
+```
+class OnlyEvens extends React.Component {
+  constructor(props) {
+    super(props);
+  }
+  shouldComponentUpdate(nextProps, nextState) {
+    console.log('Should I update?');
+    if(nextProps.value%2===0){
+      return true;
+    } else {
+      return false;
+    }
+  }
+  componentDidUpdate() {
+    console.log('Component re-rendered.');
+  }
+  render() {
+    return <h1>{this.props.value}</h1>;
+  }
+}
+class Controller extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      value: 0
+    };
+    this.addValue = this.addValue.bind(this);
+  }
+  addValue() {
+    this.setState(state => ({
+      value: state.value + 1
+    }));
+  }
+  render() {
+    return (
+      <div>
+        <button onClick={this.addValue}>Add</button>
+        <OnlyEvens value={this.state.value} />
+      </div>
+    );
+  }
+}
+```
+
+Step 35
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Example Code:
+```
+
+```
+
+Example Code:
+```
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

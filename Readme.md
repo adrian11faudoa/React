@@ -283,11 +283,8 @@ class Fruits extends React.Component {
     return (
       <div>
         <h2>Fruits:</h2>
-        { /* Change code below this line */ }
         <NonCitrus/>
         <Citrus/>
-
-        { /* Change code above this line */ }
       </div>
     );
   }
@@ -301,9 +298,7 @@ class TypesOfFood extends React.Component {
     return (
       <div>
         <h1>Types of Food:</h1>
-        { /* Change code below this line */ }
         <Fruits/>
-        { /* Change code above this line */ }
         <Vegetables />
       </div>
     );
@@ -1154,74 +1149,536 @@ class Controller extends React.Component {
 }
 ```
 
-Step 35 - Introducing Inline Styles
 
+How to style those JSX elements you create in React?
 
+You likely know that it won't be exactly the same as working with HTML because of the way you apply classes to JSX elements
+**className**
 
+If you import styles from a stylesheet, it isn't much different at all. 
 
+You apply a class to your JSX element using the **className** attribute, and apply styles to the class in your stylesheet. 
 
+Another option is to apply **inline styles**, which are very common in ReactJS development.
 
+Example Code: of an inline style in HTML
+```
+  <div style="color: yellow; font-size: 16px">Mellow Yellow</div>
+```
 
+JSX elements use the style attribute, but because of the way JSX is transpiled, you can't set the value to a string. 
 
+Instead, you set it equal to a **JavaScript object**
 
-
-
-
-
+Example Code: of an inline style in JSX
+```
+  <div style={{color: "yellow", fontSize: 16}}>Mellow Yellow</div>
+```
 
 Example Code:
 ```
+  class Colorful extends React.Component {
+    render() {
+      return (
+        <div style={{color: 'red', fontSize:72}}>Big Red</div>
+      );
+    }
+  };
+```
 
+
+All property value length units (like height, width, and fontSize) are assumed to be in px unless otherwise specified. 
+
+If you want to use em, for example, you wrap the value and the units in quotes, like **{fontSize: "4em"}**
+
+If you have a large set of styles, you can assign a **style object** to a **constant** to keep your code organized
+
+Example Code:
+```
+  const styles = {color: "purple", border: "2px solid purple", fontSize: 40} 
+  class Colorful extends React.Component {
+    render() {
+      return (
+        <div style={styles}>Style Me!</div>
+      );
+    }
+  };
+```
+
+
+You can also write JavaScript directly in your **render** methods, before the **return** statement, without inserting it inside of curly braces.
+
+
+Example Code: Magic Eight Ball toy
+```
+  const inputStyle = {
+    width: 235,
+    margin: 5
+  };
+
+  class MagicEightBall extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        userInput: '',
+        randomIndex: ''
+      };
+      this.ask = this.ask.bind(this);
+      this.handleChange = this.handleChange.bind(this);
+    }
+    ask() {
+      if (this.state.userInput) {
+        this.setState({
+          randomIndex: Math.floor(Math.random() * 20),
+          userInput: ''
+        });
+      }
+    }
+    handleChange(event) {
+      this.setState({
+        userInput: event.target.value
+      });
+    }
+    render() {
+      const possibleAnswers = [
+        'It is certain',
+        'It is decidedly so',
+        'Without a doubt',
+        'Yes, definitely',
+        'You may rely on it',
+        'As I see it, yes',
+        'Outlook good',
+        'Yes',
+        'Signs point to yes',
+        'Reply hazy try again',
+        'Ask again later',
+        'Better not tell you now',
+        'Cannot predict now',
+        'Concentrate and ask again',
+        "Don't count on it",
+        'My reply is no',
+        'My sources say no',
+        'Most likely',
+        'Outlook not so good',
+        'Very doubtful'
+      ];
+      const answer = possibleAnswers[this.state.randomIndex]; 
+      return (
+        <div>
+          <input
+            type='text'
+            value={this.state.userInput}
+            onChange={this.handleChange}
+            style={inputStyle}
+          />
+          <br />
+          <button onClick={this.ask}>Ask the Magic Eight Ball!</button>
+          <br />
+          <h3>Answer:</h3>
+          <p>
+            {answer}
+          </p>
+        </div>
+      );
+    }
+  }
+```
+
+
+Another application of using JavaScript to control your rendered view is to tie the elements that are rendered to a **condition**
+
+When the condition is **true**, one view renders. 
+When it's **false**, it's a different view.
+
+Example Code:
+```
+  class MyComponent extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        display: true
+      }
+      this.toggleDisplay = this.toggleDisplay.bind(this);
+    }
+    toggleDisplay() {
+      this.setState((state) => ({
+        display: !state.display
+      }));
+    }
+    render() {
+      if(this.state.display){
+        return (
+        <div>
+          <button onClick={this.toggleDisplay}>Toggle Display</button>
+          <h1>Displayed!</h1>
+        </div>
+      );
+      } else {
+        return (
+        <div>
+          <button onClick={this.toggleDisplay}>Toggle Display</button>
+        </div>
+      );
+      }
+    }
+  };
+```
+
+
+If you write a lot of else if statements to return slightly different UIs, you may repeat code which leaves room for error
+
+Instead, you can use the **&& logical operator** to perform conditional logic in a more concise way. 
+
+This is possible because you want to check if a condition is true, and if it is, return some markup.
+
+Example Code:
+```
+  {condition && <p>markup</p>}
+```
+
+If the condition is **true**, the markup will be returned. 
+
+If the condition is **false**, the operation will immediately return false after evaluating the condition and return **nothing**
+
+Example Code: && logical operator
+```
+  class MyComponent extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        display: true
+      }
+      this.toggleDisplay = this.toggleDisplay.bind(this);
+    }
+    toggleDisplay() {
+      this.setState(state => ({
+        display: !state.display
+      }));
+    }
+    render() {
+      return (
+        <div>
+          <button onClick={this.toggleDisplay}>Toggle Display</button>
+          {this.state.display && <h1>Displayed!</h1>}
+        </div>
+      );
+    }
+  };
+```
+
+
+The **ternary operator** is often utilized as a shortcut for if/else statements in JavaScript.
+
+**Ternary expressions** can be an alternative if you want to implement conditional logic **within** your JSX. 
+
+Recall that a ternary operator has three parts, you can combine several ternary expressions together.
+
+Example Code: basic syntax
+```
+  condition ? expressionIfTrue : expressionIfFalse;
+```
+
+Example Code: CheckUserAge
+```
+  const inputStyle = {
+    width: 235,
+    margin: 5
+  };
+  class CheckUserAge extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        input: "",
+        userAge: ""
+      };
+      this.submit = this.submit.bind(this);
+      this.handleChange = this.handleChange.bind(this);
+    }
+    handleChange(e) {
+      this.setState({
+        input: e.target.value,
+        userAge: ''
+      });
+    }
+    submit() {
+      this.setState(state => ({
+        userAge: state.input
+      }));
+    }
+    render() {
+      const buttonOne = <button onClick={this.submit}>Submit</button>;
+      const buttonTwo = <button>You May Enter</button>;
+      const buttonThree = <button>You Shall Not Pass</button>;
+      return (
+        <div>
+          <h3>Enter Your Age to Continue</h3>
+          <input
+            style={inputStyle}
+            type='number'
+            value={this.state.input}
+            onChange={this.handleChange}
+          />
+          <br />
+          {this.state.userAge === "" ? buttonOne : this.state.userAge < 18 ? buttonThree : buttonTwo}
+          </div>
+      );
+    }
+  }
+```
+
+
+Example Code: 50/50 game
+```
+  class Results extends React.Component {
+    constructor(props) {
+      super(props);
+    }
+    render() {
+      return this.props.fiftyFifty ? <h1>You Win!</h1> : <h1>You Lose!</h1>;
+    }
+  }
+  class GameOfChance extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        counter: 1
+      };
+      this.handleClick = this.handleClick.bind(this);
+    }
+    handleClick() {
+      this.setState(prevState => {
+        return {
+          counter: prevState.counter + 1
+        }
+      });
+    }
+    render() {
+      const expression = Math.random() >= .5;
+      return (
+        <div>
+          <button onClick={this.handleClick}>Play Again</button>
+          <Results fiftyFifty= {expression}/>
+          <p>{'Turn: ' + this.state.counter}</p>
+        </div>
+      );
+    }
+  }
+```
+
+
+You can also **render CSS conditionally** based on the state of a React component. 
+
+To do this, you check for a condition, and if that condition is met, you modify the styles object that's assigned to the JSX elements in the render method.
+
+Example Code: CSS with conditionals
+```
+  class GateKeeper extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        input: ''
+      };
+      this.handleChange = this.handleChange.bind(this);
+    }
+    handleChange(event) {
+      this.setState({ input: event.target.value })
+    }
+    render() {
+      let inputStyle = {
+        border: '1px solid black'
+      };
+      this.state.input.length > 15 ? inputStyle = {border: '3px solid red'} : inputStyle
+      return (
+        <div>
+          <h3>Don't Type Too Much:</h3>
+          <input
+            type="text"
+            style={inputStyle}
+            value={this.state.input}
+            onChange={this.handleChange} />
+        </div>
+      );
+    }
+  };
+```
+
+
+Often in reactive programming, a programmer has no way to know what the state of an application is until runtime, because so much depends on a user's interaction with that program. 
+
+Programmers need to write their code to correctly handle that unknown state ahead of time. 
+
+Using Array.map() in React illustrates this concept.
+
+Example Code:
+```
+  const textAreaStyles = {
+    width: 235,
+    margin: 5
+  };
+
+  class MyToDoList extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        userInput: '',
+        toDoList: []
+      }
+      this.handleSubmit = this.handleSubmit.bind(this);
+      this.handleChange = this.handleChange.bind(this);
+    }
+    handleSubmit() {
+      const itemsArray = this.state.userInput.split(',');
+      this.setState({
+        toDoList: itemsArray
+      });
+    }
+    handleChange(e) {
+      this.setState({
+        userInput: e.target.value
+      });
+    }
+    render() {
+      const items = this.state.toDoList.map((e,i) => <li key={i}>{e}</li>);
+      return (
+        <div>
+          <textarea
+            onChange={this.handleChange}
+            value={this.state.userInput}
+            style={textAreaStyles}
+            placeholder='Separate Items With Commas'
+          />
+          <br />
+          <button onClick={this.handleSubmit}>Create List</button>
+          <h1>My "To Do" List:</h1>
+          <ul>{items}</ul>
+        </div>
+      );
+    }
+  }
+```
+
+
+When you create an array of elements, each one needs a key attribute set to a unique value. 
+
+React uses these keys to keep track of which items are added, changed, or removed. 
+
+This helps make the re-rendering process more efficient when the list is modified in any way.
+
+Keys only need to be unique between sibling elements, they don't need to be globally unique in your application.
+
+Example Code:
+```
+  const frontEndFrameworks = [
+    'React',
+    'Angular',
+    'Ember',
+    'Knockout',
+    'Backbone',
+    'Vue'
+  ];
+  function Frameworks() {
+    const renderFrameworks = frontEndFrameworks.map((e, i) => <li key={i}>{e}</li>);
+    return (
+      <div>
+        <h1>Popular Front End JavaScript Frameworks</h1>
+        <ul>
+          {renderFrameworks}
+        </ul>
+      </div>
+    );
+  };
+```
+
+
+Another method related to map is **filter**, which filters the contents of an array based on a condition, then returns a new array. 
+
+For example, if you have an array of users that all have a property online which can be set to true or false, you can filter only those users that are online by writing:
+
+Example Code:
+```
+  let onlineUsers = users.filter(user => user.online);
 ```
 
 Example Code:
 ```
-
+  class MyComponent extends React.Component {
+    constructor(props) {
+      super(props);
+      this.state = {
+        users: [
+          {
+            username: 'Jeff',
+            online: true
+          },
+          {
+            username: 'Alan',
+            online: false
+          },
+          {
+            username: 'Mary',
+            online: true
+          },
+          {
+            username: 'Jim',
+            online: false
+          },
+          {
+            username: 'Sara',
+            online: true
+          },
+          {
+            username: 'Laura',
+            online: true
+          }
+        ]
+      };
+    }
+    render() {
+      const usersOnline = this.state.users.filter(user => user.online); // Change this line
+      const renderOnline = usersOnline.map((e,i) => <li key={i}>{e.username}</li>); // Change this line
+      return (
+        <div>
+          <h1>Current Online Users:</h1>
+          <ul>{renderOnline}</ul>
+        </div>
+      );
+    }
+  }
 ```
 
 
+So far, you have been rendering React components on the client. 
 
+Normally, this is what you will always do. 
 
+However, there are some use cases where it makes sense to render a React component on the **server**. 
 
+Since React is a JavaScript view library and you can run JavaScript on the server with **Node**, this is possible. 
 
+In fact, React provides a **renderToString()** method you can use for this purpose.
 
+There are **two key reasons** why rendering on the server may be used in a real world app. 
 
+**First**, without doing this, your React apps would consist of a relatively **empty HTML file** and a large bundle of JavaScript when it's initially loaded to the browser. 
 
+This may not be ideal for search engines that are trying to index the content of your pages so people can find you. 
 
+If you render the initial HTML markup on the server and send this to the client, the initial page load contains all of the page's markup which can be crawled by search engines. 
 
+**Second**, this creates a faster initial page load experience because the rendered HTML is smaller than the JavaScript code of the entire app. 
 
+React will still be able to recognize your app and manage it after the initial load.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+Example Code:
+```
+  class App extends React.Component {
+    constructor(props) {
+      super(props);
+    }
+    render() {
+      return <div/>
+    }
+  };
+  ReactDOMServer.renderToString(<App/>);
+```
 

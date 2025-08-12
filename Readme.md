@@ -10,6 +10,8 @@ React uses a syntax extension of JavaScript called JSX that allows you to write 
 
 Because JSX is a syntactic extension of JavaScript, you can actually write JavaScript directly within JSX. 
 To do this, you simply include the code you want to be treated as JavaScript within curly braces: 
+
+Example Code:
 ```
     { 'this is treated as JavaScript code' }
 ```
